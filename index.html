@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Unbeatable? Tic-Tac-Toe</title>
+    <style>
+* {
+    margin: 0;
+}
+
+.container {
+    width:100vw;
+    height:100vh;
+    display: flex;
+    flex-direction: column;
+}
+header, footer{
+    height: 80px;
+    text-align: center;
+}
+h1{
+    padding: 40px 0;
+}
+footer{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+.main {
+    margin:auto;
+}
+.gameBox {
+    width: 450px;
+    height: 450px;
+    margin-bottom: 160px; 
+    /* opacity: 0.0;   */
+}
+
+.square {
+    /*border: inset 2px black;*/
+    float: left;
+    height:150px;
+    width:150px;
+    display: flex;
+    box-sizing: border-box;
+}
+
+.square p {
+    margin: auto;
+    font-size: 100px;
+    line-height: 90px;
+}
+
+.right {
+    border-right: inset 2px black;
+}
+
+.top {
+    border-top: inset 2px black;
+}
+
+.modal {
+    z-index: 2 ;
+    position: absolute;
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    display: none;
+}
+
+.pickMe{
+    z-index: 2;
+    margin: auto;
+    border: solid 2px black;
+    width: 250px;
+    height: 200px;
+    text-align: center;
+    background-color: antiquewhite;
+}
+
+.pickMe p {
+    margin-bottom: 40px;
+}
+
+.pickMe p span {
+    margin: 40px;
+    font-size: 36px;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+<header>
+    <h1>Tic-Tac-Toe</h1>
+</header>
+<div class="main">
+        <div class="gameBox">
+            <div class="square right" id="0"></div>
+            <div class="square right" id="1"></div>
+            <div class="square" id="2"></div>
+            <div class="square right top" id="3"></div>
+            <div class="square right top" id="4"></div>
+            <div class="square top" id="5"></div>
+            <div class="square right top" id="6"></div>
+            <div class="square right top" id="7"></div>
+            <div class="square top" id="8"></div>
+        </div>
+</div>
+    <div class="modal">
+            <div class="pickMe">
+                    <h2>Welcome!</h2>
+                    <p>Choose your icon to begin:</p>
+                    <p id="icon"><span id="x">X</span><span id="o">O</span></p>
+            </div>
+    </div>
+<footer>by Aaron</footer>
+    </div>
+
+</body>
+<script>
+
+    //Tic-Tac-Toe function wrapper
+    function TTT() {
+        //game object
+        //user and computer are for the token o vs x
+        //currMove is to track whose turn it is. AI goes first
+        // turn is for?
+        var game = {
+              user: 'x'
+            , computer: 'o'
+            , currMove: 'AI'
+            , turn: ''
+        }
+
+        //array of the board
+        var board = [
+                    [],[],[],
+                    [],[],[],
+                    [],[],[]
+                    ];
+
+        //selecting a square
+        //bind the function to each square
+        var squares = document.getElementsByClassName('square');
+        Array.from(squares).forEach(e => {
+            e.addEventListener('click', select);
+        });
+    
+        function select() {   
+            //pass the square id to the marking function
+            //only works on empty squares!
+            if(isOpen(this.id)) {
+                markIt(this.id);
+            }
+            AIturn();
+        }
+        //check if square is open
+        function isOpen(id){
+            return !document.getElementById(id).innerHTML; 
+        }
+
+        //mark the square
+        function markIt(where){
+            console.log(where + ' is now marked');
+            //.. add to array
+
+            console.log(board);
+            if(game.currMove === 'user'){
+                write(where, game.user);
+            } else {
+                write(where, game.computer);
+            }
+        }
+
+        //eidt the array
+        // function intoArr(id, move){
+        //     switch(id) {
+        //         case 0:
+        //         //...
+        //         board[id].push(move);
+        //         break;
+        //         case 1:
+        //         //...
+        //         board[id].push(move);
+        //         break;
+        //         case 2:
+        //         //...
+        //         board[id].push(move);
+        //         break;
+        //         case 3:
+        //         //...
+        //         board[id].push(move);
+        //         break;
+        //         case 4:
+        //         //...
+        //         board[id].push(move);
+        //         break;
+        //         case 5:
+        //         //...
+        //         board[id].push(move);
+        //         break;
+        //         case 6:
+        //         //...
+        //         board[id].push(move);
+        //         break;
+        //         case 7:
+        //         //...
+        //         board[id].push(move);
+        //         break;
+        //         case 8:
+        //         //...
+        //         board[id].push(move);
+        //         break;
+        //     }
+        // }
+        
+         //log the choice   
+         function write(id, icon){
+                //console.log(id);
+                document.getElementById(id).innerHTML = '<p>' + icon +'</p>';
+                // intoArr(id, icon);
+                nextTurn();
+        }
+
+        //toggle the turn state
+        function nextTurn(){
+            if(game.currMove === 'user'){
+                game.currMove = 'AI'
+            } else {
+                game.currMove = 'user';
+            }
+        }
+
+        //What the AI does during it's turn
+        function AIturn(){
+            if(game.currMove === "AI"){
+            //this is the spot that will be picked
+                var num;
+
+                // random AI
+                num = Math.floor(Math.random() * 9);
+                if(isOpen(num)){
+                    markIt(num);
+                } else {
+                    AIturn();
+                }
+            //advance turn after a spot is picked
+            game.currMove = 'user' 
+            }
+        }
+
+        //check for a win condition
+        function win(){
+            //... ???
+        }
+
+        //reset the game
+        function reset() {
+            //... ???
+        }
+
+        //start things off
+        AIturn();
+
+    } //end TTT
+
+    //fire it up on load
+    window.onload = TTT();
+
+</script>
+</html>
