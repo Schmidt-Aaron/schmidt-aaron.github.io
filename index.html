@@ -126,20 +126,20 @@ footer{
         //game object
         //user and computer are for the token o vs x
         //currMove is to track whose turn it is. AI goes first
-        // turn is for?
+        // user/AI turns are for tracking moves
         var game = {
               user: 'x'
             , computer: 'o'
             , currMove: 'AI'
-            , turn: ''
+            , userTurns: []
+            , AITurns: []
+            , winner: undefined
         }
 
-        //array of the board
-        var board = [
-                    [],[],[],
-                    [],[],[],
-                    [],[],[]
-                    ];
+        var winCons =  [    [0,1,2],    [3,4,5],
+                            [6,7,8],    [0,3,6], 
+                            [1,4,7],    [2,5,8],
+                            [0,4,8],    [2,4,6] ];
 
         //selecting a square
         //bind the function to each square
@@ -151,10 +151,12 @@ footer{
         function select() {   
             //pass the square id to the marking function
             //only works on empty squares!
-            if(isOpen(this.id)) {
-                markIt(this.id);
+            if(game.winner === undefined){
+                if(isOpen(this.id)) {
+                    markIt(this.id);
+                }
+                AIturn();
             }
-            AIturn();
         }
         //check if square is open
         function isOpen(id){
@@ -164,63 +166,22 @@ footer{
         //mark the square
         function markIt(where){
             console.log(where + ' is now marked');
-            //.. add to array
-
-            console.log(board);
             if(game.currMove === 'user'){
+                game.userTurns.push(Number(where));
+                console.log('player moves:' + game.userTurns)
                 write(where, game.user);
             } else {
+                game.AITurns.push(where);
+                console.log('AI moves:' + game.AITurns);
                 write(where, game.computer);
             }
         }
-
-        //eidt the array
-        // function intoArr(id, move){
-        //     switch(id) {
-        //         case 0:
-        //         //...
-        //         board[id].push(move);
-        //         break;
-        //         case 1:
-        //         //...
-        //         board[id].push(move);
-        //         break;
-        //         case 2:
-        //         //...
-        //         board[id].push(move);
-        //         break;
-        //         case 3:
-        //         //...
-        //         board[id].push(move);
-        //         break;
-        //         case 4:
-        //         //...
-        //         board[id].push(move);
-        //         break;
-        //         case 5:
-        //         //...
-        //         board[id].push(move);
-        //         break;
-        //         case 6:
-        //         //...
-        //         board[id].push(move);
-        //         break;
-        //         case 7:
-        //         //...
-        //         board[id].push(move);
-        //         break;
-        //         case 8:
-        //         //...
-        //         board[id].push(move);
-        //         break;
-        //     }
-        // }
         
          //log the choice   
          function write(id, icon){
                 //console.log(id);
                 document.getElementById(id).innerHTML = '<p>' + icon +'</p>';
-                // intoArr(id, icon);
+                win();
                 nextTurn();
         }
 
@@ -235,7 +196,7 @@ footer{
 
         //What the AI does during it's turn
         function AIturn(){
-            if(game.currMove === "AI"){
+            if(game.currMove === "AI" && game.winner === undefined){
             //this is the spot that will be picked
                 var num;
 
@@ -253,7 +214,56 @@ footer{
 
         //check for a win condition
         function win(){
-            //... ???
+
+            if(game.currMove === 'user'){
+                if(check(game.userTurns, game.currMove)){
+                    victory(game.currMove);
+                };
+            }
+
+            if(game.currMove === 'AI'){
+                if(check(game.AITurns, game.currMove)){
+                    victory(game.currMove);
+                };
+
+                //in case of a draw
+                if(game.winner === undefined && game.AITurns.length === 5) {
+                    alert("Draw!");
+                }
+            }
+
+            function victory(player){
+                game.winner = player;
+                alert(player + " is the winner!")
+            }
+
+            function check(arr, player) {
+                var moves = arr;
+                var winner = false;
+
+                winCons.forEach(e => {
+                    if(winLoop(e)){
+                        winner = true;
+                    }
+                });
+  
+            //check each win condition to see if it is a winner!
+            function winLoop(moves){
+                var tests = 0; 
+                moves.forEach(e => {
+                    if(arr.indexOf(e) !== -1) {
+                        tests++;
+                    }
+                });
+
+                if(tests === 3) {
+                    return true;
+                }
+            } //end winLoop 
+            
+            //returns true if we have a winner
+            return winner;
+            } //end check
         }
 
         //reset the game
