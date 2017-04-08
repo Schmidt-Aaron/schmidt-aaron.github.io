@@ -10,7 +10,7 @@
     margin: 0;
 }
 
-.container {
+#container {
     width:100vw;
     height:100vh;
     display: flex;
@@ -31,11 +31,11 @@ footer{
 .main {
     margin:auto;
 }
-.gameBox {
+#gameBox {
     width: 450px;
     height: 450px;
     margin-bottom: 160px; 
-    /* opacity: 0.0;   */
+    /*opacity: 0.0; */
 }
 
 .square {
@@ -67,7 +67,6 @@ footer{
     display: flex;
     height: 100vh;
     width: 100vw;
-    display: none;
 }
 
 .pickMe{
@@ -75,28 +74,39 @@ footer{
     margin: auto;
     border: solid 2px black;
     width: 250px;
-    height: 200px;
     text-align: center;
-    background-color: antiquewhite;
+    background-color: white;
 }
 
 .pickMe p {
+    margin-bottom: 20px;
+    padding: 5px;
+}
+.pickMe h2 {
     margin-bottom: 40px;
+    margin-top: 20px;
 }
 
 .pickMe p span {
     margin: 40px;
     font-size: 36px;
 }
+.hidden{
+    visibility: hidden;
+}
+button {
+    margin-bottom: 20px;
+}
+
     </style>
 </head>
 <body>
-    <div class="container">
+    <div id="container">
 <header>
     <h1>Tic-Tac-Toe</h1>
 </header>
 <div class="main">
-        <div class="gameBox">
+        <div id="gameBox" class="hidden">
             <div class="square right" id="0"></div>
             <div class="square right" id="1"></div>
             <div class="square" id="2"></div>
@@ -108,32 +118,58 @@ footer{
             <div class="square top" id="8"></div>
         </div>
 </div>
-    <div class="modal">
+    <div id='startModal' class="modal">
             <div class="pickMe">
                     <h2>Welcome!</h2>
                     <p>Choose your icon to begin:</p>
                     <p id="icon"><span id="x">X</span><span id="o">O</span></p>
             </div>
     </div>
+    <!--<div id="restart" class='modal'>   -->
+
+    </div>
 <footer>by Aaron</footer>
     </div>
 
 </body>
 <script>
-
+    
     //Tic-Tac-Toe function wrapper
     function TTT() {
         //game object
-        //user and computer are for the token o vs x
+        //user and AI are for the token o vs x
         //currMove is to track whose turn it is. AI goes first
         // user/AI turns are for tracking moves
         var game = {
-              user: 'x'
-            , computer: 'o'
+              user: undefined
+            , AI: undefined
             , currMove: 'AI'
             , userTurns: []
             , AITurns: []
             , winner: undefined
+        }
+
+        //modal functions
+        document.getElementById('x').addEventListener('click', pickX);
+        document.getElementById('o').addEventListener('click', pickO);
+        function pickX(){
+            console.log("picked x");
+            game.user = 'x';
+            game.AI = 'o';
+            init();
+        }
+
+        function pickO(){
+            console.log("picked o");
+            game.user = 'o';
+            game.AI = 'x';
+            init();
+        }
+
+        function init(){
+            document.getElementById('startModal').style.display = 'none';
+            document.getElementById('gameBox').className -= 'hidden';
+            AIturn();
         }
 
         var winCons =  [    [0,1,2],    [3,4,5],
@@ -153,9 +189,13 @@ footer{
             //only works on empty squares!
             if(game.winner === undefined){
                 if(isOpen(this.id)) {
-                    markIt(this.id);
+                    if(game.currMove = 'user'){
+                        markIt(this.id);
+                    }
                 }
-                AIturn();
+                if(game.currMove === 'AI') {
+                    AIturn();
+                }
             }
         }
         //check if square is open
@@ -165,34 +205,32 @@ footer{
 
         //mark the square
         function markIt(where){
-            console.log(where + ' is now marked');
             if(game.currMove === 'user'){
                 game.userTurns.push(Number(where));
                 console.log('player moves:' + game.userTurns)
-                write(where, game.user);
+                document.getElementById(where).innerHTML = '<p>' + game.user +'</p>';
+                //write(where, game.user);
+                //win();
             } else {
                 game.AITurns.push(where);
                 console.log('AI moves:' + game.AITurns);
-                write(where, game.computer);
+                document.getElementById(where).innerHTML = '<p>' + game.AI +'</p>';
+                //write(where, game.AI);
+                //win();
             }
-        }
-        
-         //log the choice   
-         function write(id, icon){
-                //console.log(id);
-                document.getElementById(id).innerHTML = '<p>' + icon +'</p>';
-                win();
-                nextTurn();
+            console.log(where + ' is now marked');
+            nextTurn();
         }
 
         //toggle the turn state
         function nextTurn(){
+            win();
             if(game.currMove === 'user'){
                 game.currMove = 'AI'
             } else {
                 game.currMove = 'user';
             }
-        }
+        } 
 
         //What the AI does during it's turn
         function AIturn(){
@@ -203,38 +241,63 @@ footer{
                 // random AI
                 num = Math.floor(Math.random() * 9);
                 if(isOpen(num)){
-                    markIt(num);
+                    markIt(num);   
                 } else {
                     AIturn();
                 }
+
             //advance turn after a spot is picked
-            game.currMove = 'user' 
+                game.currMove = 'user' 
             }
         }
 
         //check for a win condition
         function win(){
-
             if(game.currMove === 'user'){
                 if(check(game.userTurns, game.currMove)){
                     victory(game.currMove);
-                };
+                }
             }
 
             if(game.currMove === 'AI'){
                 if(check(game.AITurns, game.currMove)){
                     victory(game.currMove);
-                };
+                }
 
                 //in case of a draw
                 if(game.winner === undefined && game.AITurns.length === 5) {
-                    alert("Draw!");
+                    victory('draw');
                 }
             }
 
             function victory(player){
                 game.winner = player;
-                alert(player + " is the winner!")
+                console.log('this happend ' + player);
+                
+                //create the game over modal and populate it with a reset key
+                var target = document.getElementById('container');
+                var modalP = document.createElement('div');
+                modalP.className ='modal';
+                modalP.id = 'restartM';
+                modalP.innerHTML ='<div id="restart" class="pickMe"><h2>' + gameStatus(player) + '</h2><button id="newGame">Play Again</button>';
+                console.log(modalP);
+                target.appendChild(modalP);
+                document.getElementById('newGame').addEventListener('click', reset);
+               
+                
+            }
+
+            //generates endgame text-align
+            function gameStatus(outcome){
+                if(outcome === 'draw'){
+                    return "The game was a draw!";
+                }
+                if(outcome === 'user'){
+                    return "You have won!";
+                }
+                if(outcome === 'AI') {
+                    return "You lost!";
+                }
             }
 
             function check(arr, player) {
@@ -269,11 +332,21 @@ footer{
         //reset the game
         function reset() {
             //... ???
+            console.log('reset');
+            document.getElementById('restartM').remove();
+            var squares = document.getElementsByClassName('square');
+            Array.from(squares).forEach(e => {
+                e.innerHTML = '';
+            });
+
+            game.AITurns = [];
+            game.userTurns = [];
+            game.currMove === 'user' ? game.currMove = 'user' : game.currMove = 'AI'; 
+            game.winner  = undefined;  
+            if (game.currMove === "AI") {
+                AIturn();
+            }
         }
-
-        //start things off
-        AIturn();
-
     } //end TTT
 
     //fire it up on load
