@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>My Simon Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        #container{
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+        }
+        header, footer{
+            height: 80px;
+            text-align: center;
+            width: 100%
+        }
+        footer{
+            position: fixed;
+            bottom: 0;
+        }
+        footer p {
+            padding: 20px;
+        }
+        h1{
+            font-size: 36px;
+            margin-top:20px;
+        }
+        .main {
+            margin: auto;
+        }
+        #game{
+            height: 600px;
+            width: 600px;
+            background-color: black;
+            border-radius: 100%;
+            border: 3px solid grey;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-around;
+            margin-bottom: 80px;
+        }
+        .color{
+            width:45%;
+            height: 45%;
+            justify-content: space-between;
+            opacity: 0.7;
+            transition: 300ms ease;
+        }
+        .active {
+            opacity: 1;
+        }
+        #green{
+            background-color: green;
+            border-top-left-radius: 100%;
+            
+        }
+        #red{
+            background-color: red;
+            border-top-right-radius: 100%;
+            
+        }
+        #blue{
+            background-color: blue;
+            border-bottom-left-radius: 100%;
+        }
+        #yellow{
+            background-color: yellow;
+            border-bottom-right-radius: 100%;
+        }
+        #control{
+            position: absolute;
+            border: 20px black solid;
+            margin: auto;
+            width: 200px;
+            height: 200px;
+            z-index: 2;
+            background-color: grey;
+            border-radius: 100%;
+            text-align: center;
+        }
+        .toggle{
+            margin: 20px auto;
+            width: 80px;
+            background-color: black;
+            border-radius: 15px;
+            color: white;
+        }
+        .active{
+            border-radius: 5px;
+            background-color: red;
+        }
+        .counter{
+            width: 50px;
+            height: 50px;
+            background-color: black;
+            margin: 20px auto;
+            border-radius: 5px;
+            color: red;
+            font-size: 24px;
+            display: flex;
+        }
+        .count{
+            margin: auto;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- page container-->
+    <div id="container">  
+        <header>
+            <h1>Simon Game</h1>
+        </header>
+        <div class="main">
+            <!--game div--> 
+            <div id="game"> 
+                <!--color buttons-->
+                <div id="green" class="color" data-color="0"></div>
+                <div id="red" class="color" data-color="1"></div>
+                <div id="blue" class="color" data-color="2"></div>
+                <div id="yellow" class="color" data-color="3"></div>
+
+                <!-- control panel-->
+                <div id="control">
+                    <div class="toggle start">
+                        <span class="on active">OFF</span>
+                        <span class="off">ON</span>
+                    </div>
+                    <div class="counter">
+                        <span class="count" data-count="0">00</span>
+                    </div>
+                    <div class=" toggle mode">
+                        <span class="diff">Normal</span>
+                        <span class="diff">Hard</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <p>By Aaron</p>
+        </footer>
+    </div>
+</body>
+<script>
+    function simon {
+        var seq = [];
+        var user = [];
+        var mode = "normal";
+        var round = 0;
+
+        start: function() {
+            
+        }
+    }
+</script>
+</html>
