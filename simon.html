@@ -5,112 +5,112 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>My Simon Game</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
     <style>
         * {
-            margin: 0;
-            padding: 0;
-        }
-        #container{
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            flex-direction: column;
-        }
-        header, footer{
-            height: 80px;
-            text-align: center;
-            width: 100%
-        }
-        footer{
-            position: fixed;
-            bottom: 0;
-        }
-        footer p {
-            padding: 20px;
-        }
-        h1{
-            font-size: 36px;
-            margin-top:20px;
-        }
-        .main {
-            margin: auto;
-        }
-        #game{
-            height: 600px;
-            width: 600px;
-            background-color: black;
-            border-radius: 100%;
-            border: 3px solid grey;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-around;
-            margin-bottom: 80px;
-        }
-        .color{
-            width:45%;
-            height: 45%;
-            justify-content: space-between;
-            opacity: 0.7;
-            transition: 300ms ease;
-        }
-        .active {
-            opacity: 1;
-        }
-        #green{
-            background-color: green;
-            border-top-left-radius: 100%;
-            
-        }
-        #red{
-            background-color: red;
-            border-top-right-radius: 100%;
-            
-        }
-        #blue{
-            background-color: blue;
-            border-bottom-left-radius: 100%;
-        }
-        #yellow{
-            background-color: yellow;
-            border-bottom-right-radius: 100%;
-        }
-        #control{
-            position: absolute;
-            border: 20px black solid;
-            margin: auto;
-            width: 200px;
-            height: 200px;
-            z-index: 2;
-            background-color: grey;
-            border-radius: 100%;
-            text-align: center;
-        }
-        .toggle{
-            margin: 20px auto;
-            width: 80px;
-            background-color: black;
-            border-radius: 15px;
-            color: white;
-        }
-        .active{
-            border-radius: 5px;
-            background-color: red;
-        }
-        .counter{
-            width: 50px;
-            height: 50px;
-            background-color: black;
-            margin: 20px auto;
-            border-radius: 5px;
-            color: red;
-            font-size: 24px;
-            display: flex;
-        }
-        .count{
-            margin: auto;
-        }
-
+    margin: 0;
+    padding: 0;
+}
+#container{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+}
+header, footer{
+    height: 80px;
+    text-align: center;
+    width: 100%
+}
+footer{
+    position: fixed;
+    bottom: 0;
+}
+footer p {
+    padding: 20px;
+}
+h1{
+    font-size: 36px;
+    margin-top:20px;
+}
+.main {
+    margin: auto;
+}
+#game{
+    height: 600px;
+    width: 600px;
+    background-color: black;
+    border-radius: 100%;
+    border: 3px solid grey;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 80px;
+}
+.color{
+    width:45%;
+    height: 45%;
+    justify-content: space-between;
+    opacity: 0.7;
+    transition: 300ms ease;
+}
+.pushed {
+    opacity: 1;
+}
+#green{
+    background-color: green;
+    border-top-left-radius: 100%;
+    
+}
+#red{
+    background-color: red;
+    border-top-right-radius: 100%;
+    
+}
+#blue{
+    background-color: blue;
+    border-bottom-left-radius: 100%;
+}
+#yellow{
+    background-color: yellow;
+    border-bottom-right-radius: 100%;
+}
+#control{
+    position: absolute;
+    border: 20px black solid;
+    margin: auto;
+    width: 200px;
+    height: 200px;
+    z-index: 2;
+    background-color: grey;
+    border-radius: 100%;
+    text-align: center;
+}
+.toggle{
+    margin: 20px auto;
+    width: 80px;
+    background-color: black;
+    border-radius: 15px;
+    color: white;
+}
+.active{
+    border-radius: 5px;
+    background-color: red;
+}
+.counter{
+    width: 50px;
+    height: 50px;
+    background-color: black;
+    margin: 20px auto;
+    border-radius: 5px;
+    color: red;
+    font-size: 24px;
+    display: flex;
+}
+.round{
+    margin: auto;
+}
     </style>
 </head>
 <body>
@@ -130,16 +130,15 @@
 
                 <!-- control panel-->
                 <div id="control">
-                    <div class="toggle start">
-                        <span class="on active">OFF</span>
-                        <span class="off">ON</span>
+                    <div class="toggle start" data-status="start">
+                        <span class="off active">OFF</span>
+                        <span class="on">ON</span>
                     </div>
                     <div class="counter">
-                        <span class="count" data-count="0">00</span>
+                        <span class="round" data-count="0">00</span>
                     </div>
                     <div class=" toggle mode">
-                        <span class="diff">Normal</span>
-                        <span class="diff">Hard</span>
+                        <span class="diff" data-diff="Normal">Normal</span>
                     </div>
                 </div>
             </div>
@@ -148,17 +147,207 @@
             <p>By Aaron</p>
         </footer>
     </div>
+     <script type="text/javascript" src="main.js"></script>
 </body>
 <script>
-    function simon {
-        var seq = [];
-        var user = [];
-        var mode = "normal";
-        var round = 0;
+var simon = {
+    seq: [],
+    user:  [],
+    mode:  "normal",
+    turn: 'ai',
+    round: 0,
+    on: false,
+    difficulty: 500, //  change to adjust difficulty
 
-        start: function() {
+
+    //starts the machine and binds the start button
+    //maybe add a startup sequence here? 
+    init: function() {
+        var start = document.querySelector('.start');
+        start.addEventListener('click', function(){
+                simon.start(); 
+            })
+        var mode = document.querySelector('.mode'); //TBA
+    },
+
+    // starts the game
+    start: function() {
+        //reset our variables
+        this.seq = [];
+        this.user = [];
+        this.round = 0;
+        simon.onOff();
+          
+    }, //end start
+
+    //stop the sequence??
+    stop: function(){
+        
+    },
+
+    //cosmetic on/off button plus triggers the AI to go 
+    onOff: function(){
+        if(!simon.on) {
+            document.querySelector('.off').className = "off";
+            document.querySelector('.on').className = "on active";
+            simon.on = true;
+            console.log('on');
+            simon.goAI(); // starts things off; add startup effect later?
+        } else {
+            document.querySelector('.on').className = "on";
+            document.querySelector('.off').className = "off active";
+            simon.on = false;
+            console.log('off')
+            simon.stop();
+            //ADD powerdown sequence/effect later?
+        }
+    },
+
+    //generic function to select a color and store the value in the respective array
+    selectColor: function(color){
+        var ele = document.querySelector('.color[data-color="' + color +'"]');
+        console.log('color#: ' + ele.id);
+        //highlight
+        document.getElementById(ele.id).className = "color pushed"; 
+        //set timeout to remove highlight
+        setTimeout(function() {
+            document.getElementById(ele.id).className = "color";
+        }, ( 250 ) ); 
+    }, //end selectColor
+
+    // ai turn 
+    // increment the round
+    // 1. loop through array of turns, if present
+    // 2. add new number then add one more
+    // 3. fire userTurn 
+    goAI: function(){
+        simon.round++;
+        simon.user = [];
+        document.querySelector('.round').innerHTML = simon.round;
+        console.log('_______________ round  ' + simon.round +'_____________');
+        console.log('AIlog: ' + simon.seq + ' player log: ' + simon.user);
+        if(simon.seq.length === 0){
+            addOne();
+        } else {
+            seqLoop();
+        }
+        
+        
+        // looping through array function
+        function seqLoop() {
+            var loops = simon.seq.length;
+            console.log(' seqLoop has fired. length: ' + loops)
+
+            //..the loop
+            var i = 0;
+            var theLoop = setInterval(function() {
+                var color = simon.seq[i];
+                //console.log('firing selectColor#' + i)
+                simon.selectColor(color);
+                i++;
+
+                if(i >= loops) {
+                    console.log('loop cleared')
+                    window.clearInterval(theLoop);
+                    //advances turn if it is the ai's turn
+                    if(simon.turn === 'ai') {
+                        setTimeout(function(){
+                            addOne();
+                        }, simon.difficulty)
+                    }
+                }
+                
+                
+            }, simon.difficulty ); 
+
+            // for(var i = 0; i < loops; i++) {
+            //     setTimeout(function(){
+            //         var color = simon.seq[i];
+            //         simon.selectColor(color);
+            //     }, i*simon.difficulty)
+            // } 
+            
+        } //end seqLoop
+        
+        //ai's new move
+        function addOne(){
+            console.log('addOne has fired')
+            var num = Math.floor(Math.random() * 4);
+            simon.seq.push(num);
+            simon.selectColor(num);
+            //wait 750ms then fire the user turn
+            setTimeout(simon.goUser(), (750));
             
         }
-    }
-</script>
+    }, //end go AI
+
+    //  1. toggle inputs
+    //  2.  wait for input
+    //  3. after each input, fire check function
+    //  4. check array length matches and has checked
+    //      5. remove inputs then fire goAI()
+    goUser: function(){
+        // goUser variables
+        console.log('_______________user turn_________________')
+        console.log('AIlog: ' + simon.seq + ' player log: ' + simon.user);
+        var cButs = document.querySelectorAll('.color');
+        
+        // goUser main logic
+        simon.turn = 'user';
+        enable();
+        
+
+
+        // helper functions for goUser
+        function check() {
+            var arr1 = simon.seq;
+            var arr2 = simon.user;
+            //var allPased;
+            var counter = 0;
+            arr2.forEach((e, i, arr) => {
+                //console.log('a1 value:' + arr1[i] + ', a2 value:' + arr2[i])
+                if(arr1[i] == e) {
+                    console.log('you cho-cho-chose wisely for #' + i); 
+                    counter++; 
+                }
+                if(arr1[i] != e) {
+                    console.log('you dun messed up for #' + i + '; try again');
+                    simon.user = [];
+                    counter = 0;
+                }
+            });
+
+            //advances the turn if the arrays are the right size and match fully
+            if(counter === arr1.length) {
+                disable();
+                simon.turn = 'ai';
+                setTimeout(simon.goAI(), 1000 );  
+            }
+        };
+
+        function enable() {
+            cButs.forEach(e => e.addEventListener('click', bind));
+        };
+
+        function disable() {
+            cButs.forEach(e => e.removeEventListener('click', bind));
+        };
+
+        function bind() {
+                console.log(' I clicked ' + this.id + ' ' + this.dataset.color);
+                simon.user.push(this.dataset.color);
+                simon.selectColor(this.dataset.color); //passes 0-3, and the array to log the value.
+                //fire next step during highlight
+                 setTimeout(function(){
+                     check();
+                 }, 250 )      
+        };
+    },
+
+
+} //end simon
+
+window.onload = simon.init();
+ </script> 
+
 </html>
