@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Js Calculator</title>
+	<style type="text/css" media="screen">
+		@import url('https://fonts.googleapis.com/css?family=Orbitron');
+
+* {
+  box-sizing:border-box;
+  font-family: 'orbitron', sans-serif;
+}
+body{
+  padding: 20px;
+}
+.container{
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+.calc{
+  justify-content:space-around;
+  border: 1px solid black;
+  width:400px;
+  min-height:500px;
+  padding:15px;
+}
+.title{
+  font-size:24px;
+}
+.screen {
+  border: 1px grey dotted;
+  height:80px;
+  margin:10px 0px 40px;
+  text-align: right;
+  padding-right:20px;
+}
+#display{
+  font-size:28px;
+  padding-top:20px;
+}
+.buttons {
+  width:90%;
+  margin:0 auto;
+  display:flex;
+  flex-wrap:wrap;
+}
+.btn {
+  outline: 1px black solid;
+  outline-offset: -5px;
+  height:60px;
+  width:25%;
+  display:flex;
+  align-items:center;
+  justify-content:center; 
+}
+.btn:active{
+	-webkit-box-shadow: inset -1px -1px 1px 1px rgba(0,0,0,0.4);
+	-moz-box-shadow: inset -1px -1px 1px 1px rgba(0,0,0,0.4);
+	box-shadow: inset -1px -1px 1px 1px rgba(0,0,0,0.4);
+  	outline:0px;
+  	transition-duration: s;
+}
+.dbRow{
+  display:flex;
+  width:100%;
+  flex-wrap: wrap;
+  flex-flow: row;
+}
+.threeCol{
+  width:75%;
+  display:flex;
+  flex-wrap:wrap;
+}
+.oneCol{
+  width:25%;
+  display:flex;
+  flex-direction:column;
+}
+.threeCol div{
+  flex: 0 1 33.33%;
+}
+#zero{
+  flex-basis:66.67%
+}
+#equal {
+  width:100%;
+  flex:1;
+}
+		
+	</style>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/mathjs/3.10.0/math.min.js"></script>
+</head>
+<body>
+	<section class="container">
+		<div class="calc">
+      <div class="title">Simple Flexbox Calculator</div>
+			<div class="screen">
+				<div id="display"></div>
+				<div class="history"></div>
+			</div>
+			<div class="buttons">
+	      <div class="btn" id="AC">AC</div>
+	      <div class="btn" id="C">C</div>
+        <div class="btn opp" id="mult">*</div>
+        <div class="btn opp" id="div">/</div>
+        <div class="btn num" id="1">1</div>
+        <div class="btn num" id="2">2</div>
+        <div class="btn num" id="3">3</div>
+        <div class="btn opp" id="add">+</div>
+        <div class="btn num" id="4">4</div>
+        <div class="btn num" id="5">5</div>
+        <div class="btn num" id="6">6</div>
+        <div class="btn opp" id="minus">-</div>
+        <div class="dbRow">
+          <div class="threeCol">
+            <div class="btn num" id="7">7</div>
+            <div class="btn num" id="8">8</div>
+            <div class="btn num" id="9">9</div>            
+            <div class="btn num" id="zero">0</div>
+            <div class="btn num" id="decimal">.</div>
+          </div>
+          <div class="oneCol">
+            <div class="btn" id="equal">=</div>
+          </div>
+	      </div>
+    </div>
+	</div>		
+</section>
+</body>
+<script type="text/javascript" async defer>
+
+//configuring math.js to deal with floating point numbers
+math.config({
+  number: 'BigNumber',  // Default type of number:
+                        // 'number' (default), 'BigNumber', or 'Fraction'
+  precision: 10         // Number of significant digits for BigNumbers
+});
+	
+window.onload = calc;
+
+function calc(){
+  //global varibles
+  var history = ""; //history
+  var num1 = "";
+  var num2 = "";
+  var operator = "";
+  var result = "";
+  var on = false;
+  
+  //the things we will do
+  //turn on the Calculator; clear all if already on
+  function init(){
+
+    if(on === true) {
+      clear();
+    } else {
+      on = true;
+	    document.getElementById('display').innerHTML = 0;
+
+
+      function CE(){
+        if(operator !== "" && result === ""){
+          num2 = "";
+        } else {
+          clear();
+        }
+      }
+
+      
+      //if num keys are pressed
+      //add history display later
+      function numPress(key){
+        //history = ""; // for history
+        if (operator === ""){
+          num1 += key;
+          document.getElementById('display').innerHTML = num1;
+        } else if(result !== ""){
+          clear();
+          num1 = key;
+          document.getElementById('display').innerHTML = num1;
+        } else if(operator !== "") {
+          num2 += key;
+          document.getElementById('display').innerHTML = num2;
+        }   
+      }
+
+      function opPress(key){
+        //history = ""; //for history
+          operator = key;
+          num2 = "";
+          result = "";
+          //console.log("num1: " + num1 + "; op: " + operator + "; num2: " + num2 + "; result: " + result);
+        
+      }
+
+      //evaluate the equation and assign the result to our num1 var to chain equations
+      //allow repeating the operator over agin if called more than once in a row
+      //only fire if prerequisite fields are full
+      function equals(){
+        if(num1 !== "" && operator !== "" && num2 !== ""){
+          result = math.eval(num1+operator+num2);
+          document.getElementById('display').innerHTML = result;
+          num1 = result;
+          //history += result;
+        }
+      }
+      
+
+      //begin capture input section
+    
+      var nums = document.getElementsByClassName('num');
+      var operators = document.getElementsByClassName('opp');
+  
+       //pass input to appropriate Press function using regex
+       var input = function(e){
+        var re = /\d|[.]/;
+        if(re.test(e)) {
+          //console.log("number");
+          numPress(e);
+        } else {
+          //console.log("operator");
+          opPress(e);
+        }
+      }
+
+      //mouseclick helper
+      var mouse = function(){
+        var clicked = this.innerHTML;
+        //console.log(clicked);
+        input(clicked);
+      }
+
+      //helper to convert keyboard entries into passable values
+      //add special case for enter key
+      var keyboard = function(e) {
+        var pushedKey = e.key;
+        //console.log(pushedKey);
+        if(pushedKey === 'Enter') {
+          //console.log("matched");
+          equals();
+        } else {
+          input(pushedKey);
+        }
+      }
+
+      //capture mouse 
+      Array.from(nums).forEach(e => e.addEventListener('click', mouse));
+      Array.from(operators).forEach(e => e.addEventListener('click', mouse));
+      //capture keyboard
+      window.addEventListener('keydown', keyboard);
+    
+    //assign the other keys
+    document.getElementById('equal').addEventListener('click', equals);
+    document.getElementById('C').addEventListener('click', CE);
+    
+    //end capture input section
+
+    
+  } // end if calc is on.
+}//end init
+  
+//clear results;
+      function clear(){
+        history = ""; //for history
+        num1 = "";
+        num2 = "";
+        operator = "";
+        result = "";
+        document.getElementById('display').innerHTML = 0;
+      }
+
+  //turn on the Calculator
+  document.getElementById('AC').addEventListener('click', init);
+  
+}//end calc
+
+</script>
+</html>

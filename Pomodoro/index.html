@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Pomodoro Timer</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto" rel="stylesheet">
+    <style>
+        body {
+            margin: 0px;
+            padding:0px;
+            font-family: 'Roboto', sans-serif;
+            color: antiquewhite;
+            display: flex;
+            min-height:100vh;
+            flex-direction:column;
+            text-align: center;
+            background: linear-gradient(90deg, #4CB8C4 10%, #3CD3AD 90%);
+        }
+        h1{
+            font-size: 48px;
+        }
+        .options {
+            display: inline-block;
+            font-size: 36px;
+            padding: 20px;
+        }
+        .main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: auto;
+            margin-top:40px;
+        }
+
+        .main-time{
+            height: 350px;
+            width:350px;
+            border-radius: 100%;
+            border:#4CB8C4 solid 5px;
+            display: flex;
+            margin-top: 20px;
+         }
+         #time{
+             align-self: center;
+             margin: auto;
+             font-size: 96px;
+             color: antiquewhite;
+         }
+        .type{
+            flex:1;
+        }
+    
+        .main-bottom{
+            flex:1;
+            display: flex;
+            margin-top: 60px;
+            flex-direction: row;
+        }
+        footer {
+            background-color:aqua;
+        }
+        button {
+            height: 3em;
+            width: 8em;
+            margin: 0 1em;
+        }
+
+    </style>
+</head>
+<body class="container">
+        <header>
+            <h1>Pomodoro Timer</h1>
+        </header>
+        <section class="main">
+            <div class="main-top">
+                <div class="options">
+                    <span id="minusPom" class="adjTime">-</span>
+                    <span id="pomTime"></span>
+                    <span id="addPom" class="adjTime">+</span>
+                </div>
+                <div class="options">
+                    <span id="minusBreak" class="adjTime">-</span>
+                    <span id="breakTime"></span>
+                    <span id="addBreak" class="adjTime">+</span>
+                </div>
+            </div>
+            <div class="main-time">
+                <div id="time">
+                    <span id="mins">25</span>
+                    <span class="colon">:</span>
+                    <span id="secs">00</span>
+                </div>
+            </div>
+            <div class="main-bottom">
+                <div>
+                    <button id="start">Start</button>
+                    <button id="mode">Mode</button>
+                    <button id="reset">Reset</button>
+                </div>
+            </div>
+        </section>
+        <footer>
+            Created with love by Aaron
+        </footer>
+</body>
+<script>
+/*
+    //notes:
+    //keep time values in millaseconds for consistency
+    //work in progress, forgive messiness, all the console.logs and possible crap logic :)
+*/
+    function pomodoro() {
+
+        //global vars / start times, in millaseconds
+        var running = false;        // runstate toggle
+        var isBreak = false;          // regular vs break
+        var pomoTime = 25;          //default pomodoro time
+        var breakTime = 5;          //default break time
+        var currentTimer;           //preserve current timer when stopping/starting
+        var end;                    //end of timer
+        
+        //remove highlighting when double clicking the plus/minus buttons
+        var adjusts = document.getElementsByClassName('options');
+        Array.from(adjusts).forEach(e => e.addEventListener('mousedown', f => f.preventDefault() ));
+        
+        //function and var mappings
+        document.getElementById('start').addEventListener('click', begin);
+        document.getElementById('mode').addEventListener('click', breaks);  
+        document.getElementById('reset').addEventListener('click', reset);
+
+        document.getElementById('pomTime').innerHTML = pomoTime;
+        document.getElementById('breakTime').innerHTML = breakTime;
+
+        document.getElementById('minusPom').addEventListener('click', minusP);
+        document.getElementById('addPom').addEventListener('click', addP);
+
+        document.getElementById('minusBreak').addEventListener('click', minusB);
+        document.getElementById('addBreak').addEventListener('click', addB);
+        
+        var mins = document.getElementById("mins");
+        var secs = document.getElementById("secs");
+
+        //the functions
+        //the main doer; calls the timer function 
+        function toggle(){
+            var theInt =  setInterval(function(){
+                if(running === true){
+                    timer();
+                }
+                //what to do if countdown reaches 0
+                if( currentTimer < 0 ) {
+                    clearInterval(theInt);
+                    
+                    //play sound
+                    var beep = "http://www.wavsource.com/snds_2017-03-26_2137986549265739/tv/south_park/respect_x.wav";
+                    var sound = new Audio(beep);
+                    sound.play();
+                    reset();
+                }
+
+                //stop interval if not running 
+                else if( running === false) {
+                    clearInterval(theInt);
+                    }                
+                }, 500);
+
+            //toggle html/event listeners
+            if(running === false) {
+                document.getElementById('start').removeEventListener('click', stop);
+                document.getElementById('start').addEventListener('click', begin);
+                document.getElementById('start').innerHTML = "Start"; 
+            }
+
+            if(running === true) {
+                document.getElementById('start').removeEventListener('click', begin);
+                document.getElementById('start').addEventListener('click', stop);
+                document.getElementById('start').innerHTML = "Stop";
+            }
+        };
+
+        
+        //main timer function
+        function timer(){
+                var start = new Date().getTime(); //current time
+                currentTimer = end - start; // in ms
+                var minutes = Math.floor(currentTimer / 1000 / 60);
+                var seconds = Math.floor((currentTimer % (1000 * 60)) / 1000 );
+                
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+                mins.innerHTML = minutes; 
+                secs.innerHTML = seconds;
+        };
+
+        //converts minutes to ms
+        function convert(time){
+            return time * 60 * 1000;
+        };
+
+        function begin(){
+            //calls the timer function with a default time if the currentTimer variable is empty
+            //else calls with the current duration 
+            running = true;
+            if(currentTimer === undefined) {
+                if(isBreak === false){
+                    end = new Date().getTime() + convert(pomoTime);
+                }
+                else if(isBreak === true){
+                    end = new Date().getTime() + convert(breakTime);
+                }
+                toggle();
+            } else {
+                end = new Date().getTime() + currentTimer;
+                toggle();
+            } 
+        };
+
+        function stop(){
+            running = false;
+            toggle();
+        };
+
+        function breaks() {
+            running = false;
+            toggle();
+            if(isBreak === false){
+                currentTimer = convert(breakTime);
+                mins.innerHTML = breakTime;
+                secs.innerHTML = "00";
+                isBreak = true;
+                document.getElementById('mode').innerHTML = "Pomodoro";
+            } else if (isBreak === true) {
+                currentTimer = convert(pomoTime);
+                mins.innerHTML = pomoTime;
+                secs.innerHTML = "00";
+                isBreak = false;
+                document.getElementById('mode').innerHTML = "Break";
+            }
+        };
+
+        function reset(){
+            running = false;
+            toggle();
+            currentTimer = undefined;
+            if(isBreak === false) {
+                mins.innerHTML = pomoTime;
+            } else if (isBreak === true) {
+                mins.innerHTML = breakTime;
+            }
+            secs.innerHTML = "00";
+        };  
+
+        //increment/decrease time by 1 mins;
+        function addP(){
+            pomoTime++;
+            document.getElementById('pomTime').innerHTML = pomoTime;
+            if(running === false && isBreak === false){
+                mins.innerHTML = pomoTime;
+            }
+        };
+        function minusP(){
+            pomoTime--;
+            document.getElementById('pomTime').innerHTML = pomoTime;
+            if(running === false && isBreak === false){
+                mins.innerHTML = pomoTime;
+            }
+        };
+        function addB(){
+            breakTime++;
+            document.getElementById('breakTime').innerHTML = breakTime;
+            if(running === false && isBreak === true){
+                mins.innerHTML = breakTime;
+            }
+        };
+        function minusB(){
+           breakTime--;
+           document.getElementById('breakTime').innerHTML = breakTime;
+           if(running === false && isBreak === true){
+                mins.innerHTML = breakTime;
+            }
+        };
+
+    } //end pomodoro;
+
+    window.onload = pomodoro();
+</script>
+</html>    
