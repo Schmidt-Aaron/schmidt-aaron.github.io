@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>My Simon Game</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <!-- page container-->
+    <div id="container">  
+        <header>
+            <h1>Simon Game</h1>
+        </header>
+        <div class="main">
+            <!--game div--> 
+            <div id="game"> 
+                <!--color buttons-->
+                <div id="green" class="color" data-color="0" data-listener="false"></div>
+                <div id="red" class="color" data-color="1" data-listener="false"></div>
+                <div id="blue" class="color" data-color="2" data-listener="false"></div>
+                <div id="yellow" class="color" data-color="3" data-listener="false"></div>
+
+                <!-- control panel-->
+                <div id="control">
+                    <div class="brand">Simon</div>
+                    <div class="middle">
+                        <div class="counter inline">
+                            <div class="round" data-count="0"></div>
+                            <span>ROUND</span>
+                        </div>
+                        <div class="inline">
+                            <button class="btn start"></button>
+                            <span>START</span>
+                        </div>
+                        <div class="inline">
+                            <button class="btn mode"></button>
+                            <span>STRICT</span>
+                        </div>
+                    </div>
+                    <div class="bottom">
+                        <div class="activate">
+                            <p class="inline">OFF</p>
+                            <div class="slide inline">
+                                <div class="inside"></div>
+                            </div>
+                            <p class="inline">ON</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <p>By Aaron</p>
+        </footer>
+    </div>
+     <script type="text/javascript" src="main.js"></script>
+</body>
+</html>

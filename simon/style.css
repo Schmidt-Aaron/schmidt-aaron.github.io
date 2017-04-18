@@ -1,0 +1,156 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+#container{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+}
+header, footer{
+    height: 80px;
+    text-align: center;
+    width: 100%
+}
+footer{
+    position: fixed;
+    bottom: 0;
+}
+footer p {
+    padding: 20px;
+}
+h1{
+    font-size: 36px;
+    margin-top:20px;
+}
+.main {
+    margin: auto;
+}
+#game{
+    height: 600px;
+    width: 600px;
+    background-color: black;
+    border-radius: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 80px;
+}
+.color{
+    width:50%;
+    height: 50%;
+    box-sizing: border-box;
+    border: black solid 15px;
+    opacity: 0.7;
+    transition: 300ms ease;
+}
+.pushed {
+    opacity: 1;
+}
+#green{
+    background-color: green;
+    border-top-left-radius: 100%;
+    
+}
+#red{
+    background-color: red;
+    border-top-right-radius: 100%;
+    
+}
+#blue{
+    background-color: blue;
+    border-bottom-left-radius: 100%;
+}
+#yellow{
+    background-color: yellow;
+    border-bottom-right-radius: 100%;
+}
+#control{
+    position: absolute;
+    border: 20px black solid;
+    margin: auto;
+    width: 200px;
+    height: 200px;
+    z-index: 2;
+    background-color: grey;
+    border-radius: 100%;
+    text-align: center;
+}
+.active{
+    border-radius: 5px;
+    background-color: red;
+}
+.middle div { 
+    width:50px;   
+}
+.counter{
+    height: 50px;
+    background-color: black;
+    border-radius: 5px;
+    margin-top: 15px;
+}
+.inline span {
+    display: block;
+    font-size: 10px;
+    margin-top: 12px;
+}
+.round{
+    color: red;
+    padding-top: 12px;
+    font-size: 24px;
+    min-height: 27px;
+}
+.start {
+    background-color: red;
+}
+.mode {
+    background-color: #9e9e00;
+}
+.lit {
+    background-color: yellow;
+}
+button.btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+.inline{
+    display: inline-block;
+}
+.brand{
+    font-size: 36px;
+    margin-top: 20px;
+}
+.bottom{
+    margin-top: 10px;
+}
+.activate {
+    font-size: 12px;
+    margin-top: 20px;
+}
+.slide {
+    display: inline-block;
+    height: 22px;
+    width:42px;
+    background-color: black;
+    box-sizing: border-box;
+    border: 1px solid;
+    border-radius: 2px;
+}
+.inside {
+    border: 2px solid darkblue;
+    border-radius: 2px;
+    height: 16px;
+    width: 16px;
+    background-color: darkblue;
+    position: relative;
+}
+.on{
+    left:20px;
+}
+p.inline {
+    position: relative;
+    bottom: 6px;
+}
